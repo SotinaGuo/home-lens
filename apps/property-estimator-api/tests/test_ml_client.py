@@ -24,7 +24,12 @@ def sample_features() -> PropertyFeatures:
 
 def test_predict_parses_successful_response() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
+        assert request.method == "POST"
         assert request.url.path == "/predict"
+        assert request.read() == (
+            b'{"square_footage":1550.0,"bedrooms":3,"bathrooms":2.0,"year_built":1997,'
+            b'"lot_size":6800.0,"distance_to_city_center":4.1,"school_rating":7.6}'
+        )
         return httpx.Response(
             200,
             json={
@@ -85,6 +90,24 @@ def test_predict_rejects_malformed_response() -> None:
         base_url="http://ml-api.test",
         http_client=httpx.Client(
             transport=httpx.MockTransport(lambda request: httpx.Response(200, json={}))
+        ),
+    )
+
+    with pytest.raises(MlApiResponseError):
+        client.predict(sample_features())
+
+
+@pytest.mark.parametrize("predicted_price", ["abc", None])
+def test_predict_rejects_non_numeric_predicted_price(predicted_price: object) -> None:
+    client = MlApiClient(
+        base_url="http://ml-api.test",
+        http_client=httpx.Client(
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(
+                    200,
+                    json={"predictions": [{"predicted_price": predicted_price}]},
+                )
+            )
         ),
     )
 

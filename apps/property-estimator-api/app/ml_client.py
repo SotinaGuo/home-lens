@@ -53,10 +53,11 @@ class MlApiClient:
             predictions = body["predictions"]
             first_prediction = predictions[0]
             predicted_price = first_prediction["predicted_price"]
+            parsed_price = float(predicted_price)
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise MlApiResponseError("ML API returned a malformed prediction response") from exc
 
-        return round(float(predicted_price), 2)
+        return round(parsed_price, 2)
 
     def close(self) -> None:
         if self._owns_client:
