@@ -38,6 +38,10 @@ models/ridge_model.joblib
 models/metrics.json
 ```
 
+`/model-info` reports Ridge coefficients from the trained pipeline after
+`StandardScaler` transforms the input features. Treat those coefficients as
+standardized-feature coefficients, not raw-feature coefficients.
+
 ## Run locally
 
 ```bash

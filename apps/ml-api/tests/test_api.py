@@ -1,6 +1,19 @@
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.config import DATA_PATH
+from app.main import create_app
+from app.model_service import ModelService
+
+
+def make_client(tmp_path: Path) -> TestClient:
+    service = ModelService(
+        data_path=DATA_PATH,
+        model_file=tmp_path / "ridge_model.joblib",
+        metrics_file=tmp_path / "metrics.json",
+    )
+    return TestClient(create_app(service))
 
 
 def valid_payload() -> dict[str, float | int]:
@@ -15,8 +28,8 @@ def valid_payload() -> dict[str, float | int]:
     }
 
 
-def test_health_endpoint() -> None:
-    with TestClient(app) as client:
+def test_health_endpoint(tmp_path: Path) -> None:
+    with make_client(tmp_path) as client:
         response = client.get("/health")
 
     assert response.status_code == 200
@@ -26,8 +39,8 @@ def test_health_endpoint() -> None:
     assert body["algorithm"] == "Ridge Regression"
 
 
-def test_predict_single_payload() -> None:
-    with TestClient(app) as client:
+def test_predict_single_payload(tmp_path: Path) -> None:
+    with make_client(tmp_path) as client:
         response = client.post("/predict", json=valid_payload())
 
     assert response.status_code == 200
@@ -37,10 +50,10 @@ def test_predict_single_payload() -> None:
     assert body["predictions"][0]["predicted_price"] > 0
 
 
-def test_predict_batch_payload() -> None:
+def test_predict_batch_payload(tmp_path: Path) -> None:
     payload = [valid_payload(), valid_payload()]
 
-    with TestClient(app) as client:
+    with make_client(tmp_path) as client:
         response = client.post("/predict", json=payload)
 
     assert response.status_code == 200
@@ -49,18 +62,25 @@ def test_predict_batch_payload() -> None:
     assert len(body["predictions"]) == 2
 
 
-def test_predict_rejects_invalid_payload() -> None:
+def test_predict_rejects_empty_batch_payload(tmp_path: Path) -> None:
+    with make_client(tmp_path) as client:
+        response = client.post("/predict", json=[])
+
+    assert response.status_code == 422
+
+
+def test_predict_rejects_invalid_payload(tmp_path: Path) -> None:
     payload = valid_payload()
     payload["school_rating"] = 11
 
-    with TestClient(app) as client:
+    with make_client(tmp_path) as client:
         response = client.post("/predict", json=payload)
 
     assert response.status_code == 422
 
 
-def test_model_info_endpoint() -> None:
-    with TestClient(app) as client:
+def test_model_info_endpoint(tmp_path: Path) -> None:
+    with make_client(tmp_path) as client:
         response = client.get("/model-info")
 
     assert response.status_code == 200
@@ -71,3 +91,12 @@ def test_model_info_endpoint() -> None:
     assert "square_footage" in body["coefficients"]
     assert set(body["metrics"]) == {"mae", "rmse", "r2"}
     assert body["training_samples"] == 50
+
+
+def test_api_tests_use_tmp_path_model_artifacts(tmp_path: Path) -> None:
+    with make_client(tmp_path) as client:
+        response = client.get("/health")
+
+    assert response.status_code == 200
+    assert (tmp_path / "ridge_model.joblib").exists()
+    assert (tmp_path / "metrics.json").exists()

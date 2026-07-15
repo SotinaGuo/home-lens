@@ -6,27 +6,13 @@ from typing import Annotated
 from fastapi import Body, FastAPI, HTTPException
 
 from app.config import ALGORITHM_NAME
-from app.model_service import model_service
+from app.model_service import ModelService, model_service as default_model_service
 from app.schemas import (
     HealthResponse,
     HousingFeatures,
     ModelInfoResponse,
     PredictionItem,
     PredictionResponse,
-)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    model_service.load()
-    yield
-
-
-app = FastAPI(
-    title="Housing Price Prediction Model API",
-    description="FastAPI service for Ridge Regression housing price predictions.",
-    version="0.1.0",
-    lifespan=lifespan,
 )
 
 
@@ -59,36 +45,60 @@ PredictPayload = Annotated[
 ]
 
 
-@app.get("/health", response_model=HealthResponse)
-def health() -> HealthResponse:
-    return HealthResponse(
-        status="ok",
-        model_loaded=model_service.model_loaded,
-        algorithm=ALGORITHM_NAME,
+def create_app(model_service: ModelService | None = None) -> FastAPI:
+    service = model_service or default_model_service
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        service.load()
+        yield
+
+    app = FastAPI(
+        title="Housing Price Prediction Model API",
+        description="FastAPI service for Ridge Regression housing price predictions.",
+        version="0.1.0",
+        lifespan=lifespan,
     )
 
+    @app.get("/health", response_model=HealthResponse)
+    def health() -> HealthResponse:
+        return HealthResponse(
+            status="ok",
+            model_loaded=service.model_loaded,
+            algorithm=ALGORITHM_NAME,
+        )
 
-@app.post("/predict", response_model=PredictionResponse)
-def predict(payload: PredictPayload) -> PredictionResponse:
-    try:
+    @app.post("/predict", response_model=PredictionResponse)
+    def predict(payload: PredictPayload) -> PredictionResponse:
         items = payload if isinstance(payload, list) else [payload]
-        predicted_prices = model_service.predict(items)
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail="Prediction failed") from exc
+        if not items:
+            raise HTTPException(
+                status_code=422,
+                detail="Prediction batch must contain at least one item",
+            )
 
-    return PredictionResponse(
-        count=len(predicted_prices),
-        predictions=[
-            PredictionItem(predicted_price=predicted_price)
-            for predicted_price in predicted_prices
-        ],
-        algorithm=ALGORITHM_NAME,
-    )
+        try:
+            predicted_prices = service.predict(items)
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail="Prediction failed") from exc
+
+        return PredictionResponse(
+            count=len(predicted_prices),
+            predictions=[
+                PredictionItem(predicted_price=predicted_price)
+                for predicted_price in predicted_prices
+            ],
+            algorithm=ALGORITHM_NAME,
+        )
+
+    @app.get("/model-info", response_model=ModelInfoResponse)
+    def model_info() -> ModelInfoResponse:
+        try:
+            return ModelInfoResponse(**service.get_model_info())
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail="Model info unavailable") from exc
+
+    return app
 
 
-@app.get("/model-info", response_model=ModelInfoResponse)
-def model_info() -> ModelInfoResponse:
-    try:
-        return ModelInfoResponse(**model_service.get_model_info())
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail="Model info unavailable") from exc
+app = create_app()
