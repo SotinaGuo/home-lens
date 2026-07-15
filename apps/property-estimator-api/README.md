@@ -26,7 +26,7 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-可选说明：该服务当前把历史记录保存在内存中，重启后会清空，适合 MVP / demo 场景。
+Optional note: this service currently stores estimate history in memory, so records are cleared on restart. That is appropriate for the MVP/demo scenario.
 
 ## Run with local ml-api
 
@@ -67,7 +67,7 @@ docker build -t property-estimator-api .
 docker run --rm -p 8001:8001 -e ML_API_BASE_URL=http://host.docker.internal:8000 property-estimator-api
 ```
 
-The Docker command assumes `ml-api` is running on the host at port `8000`.
+The Docker command assumes `ml-api` is running on the host at port `8000`. `host.docker.internal` is available by default in Docker Desktop environments; on Linux, add `--add-host=host.docker.internal:host-gateway` to the `docker run` command.
 
 ## Example estimate request
 

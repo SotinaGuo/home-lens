@@ -1,3 +1,6 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, Query
 
 from app.config import Settings, get_settings
@@ -29,6 +32,16 @@ def build_default_service(settings: Settings) -> EstimatorService:
     )
 
 
+@asynccontextmanager
+async def service_lifespan(service: EstimatorService) -> AsyncIterator[None]:
+    try:
+        yield
+    finally:
+        close = getattr(service.ml_client, "close", None)
+        if callable(close):
+            close()
+
+
 def create_app(
     service: EstimatorService | None = None,
     settings: Settings | None = None,
@@ -40,6 +53,7 @@ def create_app(
         title="Property Estimator API",
         description="Backend API for property value estimates and comparisons.",
         version="0.1.0",
+        lifespan=lambda _: service_lifespan(active_service),
     )
 
     @app.get("/health", response_model=HealthResponse)

@@ -30,6 +30,15 @@ class FakeMlClient:
         return self.price
 
 
+class ClosableFakeMlClient(FakeMlClient):
+    def __init__(self, price: float = 250829.56) -> None:
+        super().__init__(price=price)
+        self.closed = False
+
+    def close(self) -> None:
+        self.closed = True
+
+
 def make_client(
     price: float = 250829.56,
     error: Exception | None = None,
@@ -165,3 +174,18 @@ def test_create_estimate_maps_ml_response_failure_to_502() -> None:
 
     assert response.status_code == 502
     assert response.json()["detail"] == "ML API prediction failed"
+
+
+def test_app_shutdown_closes_ml_client() -> None:
+    ml_client = ClosableFakeMlClient()
+    service = EstimatorService(
+        repository=EstimateRepository(),
+        ml_client=ml_client,
+    )
+    settings = Settings(ml_api_base_url="http://ml-api.test")
+
+    with TestClient(create_app(service=service, settings=settings)) as client:
+        response = client.get("/health")
+
+    assert response.status_code == 200
+    assert ml_client.closed is True
