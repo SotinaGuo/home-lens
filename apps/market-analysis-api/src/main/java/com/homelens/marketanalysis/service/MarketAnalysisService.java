@@ -124,6 +124,12 @@ public class MarketAnalysisService {
         if (filters.maxPrice() != null && filters.maxPrice() < 0) {
             throw new InvalidMarketFilterException("maxPrice cannot be negative");
         }
+        if (filters.minBedrooms() != null && filters.minBedrooms() < 0) {
+            throw new InvalidMarketFilterException("minBedrooms cannot be negative");
+        }
+        if (filters.maxBedrooms() != null && filters.maxBedrooms() < 0) {
+            throw new InvalidMarketFilterException("maxBedrooms cannot be negative");
+        }
         if (filters.minPrice() != null
             && filters.maxPrice() != null
             && filters.minPrice() > filters.maxPrice()) {

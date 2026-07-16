@@ -80,6 +80,16 @@ class MarketControllerTest {
     }
 
     @Test
+    void returnsBadRequestForNegativeBedrooms() throws Exception {
+        given(marketAnalysisService.segments(any(MarketFilters.class)))
+            .willThrow(new InvalidMarketFilterException("minBedrooms cannot be negative"));
+
+        mockMvc.perform(get("/market/segments?minBedrooms=-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail", equalTo("minBedrooms cannot be negative")));
+    }
+
+    @Test
     void returnsWhatIfResponse() throws Exception {
         given(marketAnalysisService.whatIf(any())).willReturn(new WhatIfResponse(
             250829.56,

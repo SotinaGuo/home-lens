@@ -63,6 +63,17 @@ class MarketAnalysisServiceTest {
     }
 
     @Test
+    void rejectsNegativeBedroomFilters() {
+        assertThatThrownBy(() -> service.segments(new MarketFilters(null, null, -1, null, null, null)))
+            .isInstanceOf(InvalidMarketFilterException.class)
+            .hasMessageContaining("minBedrooms cannot be negative");
+
+        assertThatThrownBy(() -> service.segments(new MarketFilters(null, null, null, -1, null, null)))
+            .isInstanceOf(InvalidMarketFilterException.class)
+            .hasMessageContaining("maxBedrooms cannot be negative");
+    }
+
+    @Test
     void returnsWhatIfPredictionWithMarketPosition() {
         MlApiClient mlApiClient = Mockito.mock(MlApiClient.class);
         MarketAnalysisService service = new MarketAnalysisService(

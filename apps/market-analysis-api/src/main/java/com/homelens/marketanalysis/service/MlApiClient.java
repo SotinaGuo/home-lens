@@ -1,6 +1,7 @@
 package com.homelens.marketanalysis.service;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,33 @@ import com.homelens.marketanalysis.model.PropertyFeatures;
 @Component
 public class MlApiClient {
 
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(3);
+
     private final RestClient restClient;
     private final URI mlApiBaseUrl;
 
     @Autowired
     public MlApiClient(RestClient.Builder builder, MarketAnalysisProperties properties) {
-        this(builder, properties.mlApiBaseUrl());
+        this(builder, properties.mlApiBaseUrl(), DEFAULT_TIMEOUT, DEFAULT_TIMEOUT);
     }
 
     MlApiClient(RestClient.Builder builder, URI mlApiBaseUrl) {
+        this(builder, mlApiBaseUrl, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT);
+    }
+
+    MlApiClient(
+        RestClient.Builder builder,
+        URI mlApiBaseUrl,
+        Duration connectTimeout,
+        Duration readTimeout
+    ) {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(connectTimeout);
+        requestFactory.setReadTimeout(readTimeout);
+
         this.restClient = builder
             .baseUrl(mlApiBaseUrl.toString())
-            .requestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+            .requestFactory(new BufferingClientHttpRequestFactory(requestFactory))
             .build();
         this.mlApiBaseUrl = mlApiBaseUrl;
     }

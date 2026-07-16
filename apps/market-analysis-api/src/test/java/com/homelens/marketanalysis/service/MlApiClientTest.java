@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +74,26 @@ class MlApiClientTest {
         MlApiClient client = new MlApiClient(
             RestClient.builder(),
             URI.create(server.url("/").toString())
+        );
+
+        assertThatThrownBy(() -> client.predict(features()))
+            .isInstanceOf(MlApiUnavailableException.class)
+            .hasMessageContaining("Prediction service unavailable");
+    }
+
+    @Test
+    void throwsWhenMlApiDoesNotRespondBeforeTimeout() {
+        server.enqueue(new MockResponse()
+            .setResponseCode(200)
+            .setHeader("content-type", "application/json")
+            .setBody("{\"count\":1,\"predictions\":[{\"predicted_price\":250829.56}]}")
+            .setBodyDelay(500, TimeUnit.MILLISECONDS));
+
+        MlApiClient client = new MlApiClient(
+            RestClient.builder(),
+            URI.create(server.url("/").toString()),
+            Duration.ofMillis(100),
+            Duration.ofMillis(100)
         );
 
         assertThatThrownBy(() -> client.predict(features()))
