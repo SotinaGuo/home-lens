@@ -10,9 +10,9 @@ const appCards = [
   },
   {
     title: "Property Market Analysis",
-    status: "Planned Java module",
+    status: "Live Java module",
     description:
-      "A future dashboard for aggregate market statistics, filters, what-if analysis, and export workflows.",
+      "Explore market statistics, filter comparable property segments, and run what-if analysis through the Java backend.",
     href: "/market-analysis"
   }
 ];
@@ -28,9 +28,9 @@ export default function HomePage() {
           See property value and market signals through one clear lens.
         </h1>
         <p className="mt-4 max-w-3xl text-lg text-slate-600">
-          HomeLens demonstrates the frontend layer for the fullstack interview task.
-          App 1 is connected to the Python backend; App 2 is intentionally scoped as
-          a placeholder until the Java backend is built.
+          HomeLens demonstrates a fullstack housing analytics workflow. App 1 estimates
+          individual property values through the Python backend; App 2 explores market
+          segments through the Java Spring Boot backend.
         </p>
       </section>
 
