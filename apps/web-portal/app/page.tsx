@@ -22,15 +22,15 @@ export default function HomePage() {
     <main className="space-y-10">
       <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
         <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
-          Housing Intelligence Portal
+          HomeLens
         </p>
         <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-slate-950">
-          A unified dashboard for housing price prediction workflows.
+          See property value and market signals through one clear lens.
         </h1>
         <p className="mt-4 max-w-3xl text-lg text-slate-600">
-          This portal demonstrates the frontend layer for the fullstack interview
-          task. App 1 is connected to the Python backend; App 2 is intentionally
-          scoped as a placeholder until the Java backend is built.
+          HomeLens demonstrates the frontend layer for the fullstack interview task.
+          App 1 is connected to the Python backend; App 2 is intentionally scoped as
+          a placeholder until the Java backend is built.
         </p>
       </section>
 

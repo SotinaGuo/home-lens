@@ -4,8 +4,8 @@ import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Housing Intelligence Portal",
-  description: "Unified portal for property valuation and market analysis demos"
+  title: "HomeLens",
+  description: "A property valuation and market insight portal"
 };
 
 export default function RootLayout({

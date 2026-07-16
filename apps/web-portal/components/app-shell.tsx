@@ -12,10 +12,10 @@ export function AppShell({ children }: AppShellProps) {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
           <Link href="/" className="group">
             <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
-              Housing Intelligence
+              HomeLens
             </p>
             <p className="text-lg font-bold text-slate-950 group-hover:text-brand-700">
-              Fullstack Interview Portal
+              Property Intelligence Portal
             </p>
           </Link>
           <nav aria-label="Primary navigation" className="flex flex-wrap gap-2">
