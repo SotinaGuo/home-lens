@@ -48,7 +48,7 @@ export type PropertyRecord = PropertyFeatures & {
 export type MarketSegmentResponse = {
   filters: MarketFilters;
   record_count: number;
-  statistics: MarketSummaryResponse;
+  statistics: MarketSummaryResponse | null;
   records: PropertyRecord[];
 };
 

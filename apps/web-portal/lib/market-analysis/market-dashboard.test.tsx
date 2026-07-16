@@ -89,6 +89,31 @@ describe("MarketDashboard", () => {
     expect(await screen.findByText("8")).toBeTruthy();
   });
 
+  it("renders zero-record segment responses with null statistics", async () => {
+    vi.spyOn(api, "getMarketHealth").mockResolvedValue({
+      status: "ok",
+      service: "market-analysis-api",
+      records_loaded: 50,
+      ml_api_base_url: "http://localhost:8000"
+    });
+    vi.spyOn(api, "getMarketSummary").mockResolvedValue(summary);
+    vi.spyOn(api, "getMarketSegments").mockResolvedValue({
+      filters: { minBedrooms: 99 },
+      record_count: 0,
+      statistics: null,
+      records: []
+    });
+
+    render(<MarketDashboard />);
+
+    await screen.findByText("Online");
+    fireEvent.change(screen.getByLabelText("Min bedrooms"), { target: { value: "99" } });
+    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+
+    expect(await screen.findByText("0")).toBeTruthy();
+    expect(screen.getByText("No matching records for these filters.")).toBeTruthy();
+  });
+
   it("submits what-if values and renders predicted price", async () => {
     vi.spyOn(api, "getMarketHealth").mockResolvedValue({
       status: "ok",
