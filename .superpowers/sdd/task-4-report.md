@@ -47,3 +47,23 @@
 ## Concerns
 
 - None.
+
+## Fix after review
+
+- Root cause: the original Task 4 verification report captured transient tooling noise from the local execution environment. The controller re-run showed the Node `ExperimentalWarning` was not reproducible with `node v24.0.0`, but npm `11.3.0` still emitted its global update-notifier notice after an otherwise successful project build.
+- Files changed:
+  - `apps/web-portal/.npmrc`
+  - `.superpowers/sdd/task-4-report.md`
+- Fix: added a project-local npm config, `update-notifier=false`, scoped to `apps/web-portal` so the exact project npm commands do not emit npm's update notification during verification.
+- Verification:
+  - `cd apps/web-portal && npm run lint`
+    - Exited `0`.
+    - Output summary: `eslint . --max-warnings=0`; no warnings or notices.
+  - `cd apps/web-portal && npm run typecheck`
+    - Exited `0`.
+    - Output summary: `tsc --noEmit`; no warnings or notices.
+  - `cd apps/web-portal && npm run build`
+    - Exited `0`.
+    - Output summary: Next.js `15.5.20` compiled successfully, generated static pages `(5/5)`, listed `/market-analysis`, and completed route optimization output.
+    - Confirmed the npm update-notifier notice no longer prints. The previously reported Node `ExperimentalWarning` also did not print.
+- Output status: pristine for the required commands, with only normal npm script echoes and expected Next.js build progress/results.
