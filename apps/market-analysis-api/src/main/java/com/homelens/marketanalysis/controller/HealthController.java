@@ -5,14 +5,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.homelens.marketanalysis.config.MarketAnalysisProperties;
 import com.homelens.marketanalysis.dto.HealthResponse;
+import com.homelens.marketanalysis.service.DatasetLoader;
 
 @RestController
 public class HealthController {
 
     private final MarketAnalysisProperties properties;
+    private final DatasetLoader datasetLoader;
 
-    public HealthController(MarketAnalysisProperties properties) {
+    public HealthController(MarketAnalysisProperties properties, DatasetLoader datasetLoader) {
         this.properties = properties;
+        this.datasetLoader = datasetLoader;
     }
 
     @GetMapping("/health")
@@ -20,7 +23,7 @@ public class HealthController {
         return new HealthResponse(
             "ok",
             "market-analysis-api",
-            0,
+            datasetLoader.recordCount(),
             properties.mlApiBaseUrl().toString()
         );
     }
