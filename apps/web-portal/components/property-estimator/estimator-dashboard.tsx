@@ -65,11 +65,13 @@ export function EstimatorDashboard() {
 
     setIsComparing(true);
     setErrorMessage(null);
+    setComparison(null);
 
     try {
       const response = await compareEstimates({ estimate_ids: selectedIds });
       setComparison(response);
     } catch (error) {
+      setComparison(null);
       setErrorMessage(error instanceof Error ? error.message : "Unable to compare estimates");
     } finally {
       setIsComparing(false);
@@ -77,6 +79,7 @@ export function EstimatorDashboard() {
   }
 
   function toggleSelected(estimateId: string) {
+    setComparison(null);
     setSelectedIds((current) =>
       current.includes(estimateId)
         ? current.filter((id) => id !== estimateId)
