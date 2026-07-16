@@ -1,18 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createEstimate, listEstimates } from "@/lib/property-estimator/api";
+import { compareEstimates, createEstimate, listEstimates } from "@/lib/property-estimator/api";
 import type { PropertyFeatureFormValues } from "@/lib/property-estimator/schemas";
-import type { EstimateRecord } from "@/lib/property-estimator/types";
+import type { ComparisonResponse, EstimateRecord } from "@/lib/property-estimator/types";
+import { EstimateComparison } from "./estimate-comparison";
 import { EstimateForm } from "./estimate-form";
 import { EstimateHistory } from "./estimate-history";
 import { EstimateResultCard } from "./estimate-result-card";
 
 export function EstimatorDashboard() {
   const [currentEstimate, setCurrentEstimate] = useState<EstimateRecord | null>(null);
+  const [comparison, setComparison] = useState<ComparisonResponse | null>(null);
   const [estimates, setEstimates] = useState<EstimateRecord[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isComparing, setIsComparing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
@@ -44,6 +47,7 @@ export function EstimatorDashboard() {
     try {
       const estimate = await createEstimate(values);
       setCurrentEstimate(estimate);
+      setComparison(null);
       await refreshHistory();
     } catch (error) {
       setErrorMessage(
@@ -51,6 +55,24 @@ export function EstimatorDashboard() {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleCompare() {
+    if (selectedIds.length < 2) {
+      return;
+    }
+
+    setIsComparing(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await compareEstimates({ estimate_ids: selectedIds });
+      setComparison(response);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Unable to compare estimates");
+    } finally {
+      setIsComparing(false);
     }
   }
 
@@ -82,11 +104,12 @@ export function EstimatorDashboard() {
         selectedIds={selectedIds}
       />
 
-      <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-slate-600">
-        Select at least two history records to compare them. Comparison details are added in the
-        next task.
-        <p className="mt-2 text-sm">Selected records: {selectedEstimates.length}</p>
-      </section>
+      <EstimateComparison
+        comparison={comparison}
+        isComparing={isComparing}
+        onCompare={handleCompare}
+        selectedEstimates={selectedEstimates}
+      />
     </div>
   );
 }
