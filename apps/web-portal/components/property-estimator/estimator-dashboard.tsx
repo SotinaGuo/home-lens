@@ -19,6 +19,7 @@ export function EstimatorDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const selectedIdsRef = useRef(selectedIds);
+  const historyRequestIdRef = useRef(0);
 
   const selectedEstimates = useMemo(
     () => estimates.filter((estimate) => selectedIds.includes(estimate.id)),
@@ -30,14 +31,22 @@ export function EstimatorDashboard() {
   }, [selectedIds]);
 
   const refreshHistory = useCallback(async () => {
+    const requestId = historyRequestIdRef.current + 1;
+    historyRequestIdRef.current = requestId;
     setIsHistoryLoading(true);
     try {
       const response = await listEstimates();
-      setEstimates(response.items);
+      if (historyRequestIdRef.current === requestId) {
+        setEstimates(response.items);
+      }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load history");
+      if (historyRequestIdRef.current === requestId) {
+        setErrorMessage(error instanceof Error ? error.message : "Unable to load history");
+      }
     } finally {
-      setIsHistoryLoading(false);
+      if (historyRequestIdRef.current === requestId) {
+        setIsHistoryLoading(false);
+      }
     }
   }, []);
 

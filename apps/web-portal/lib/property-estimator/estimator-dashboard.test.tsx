@@ -134,4 +134,55 @@ describe("EstimatorDashboard", () => {
       true
     );
   });
+
+  it("keeps the newest history refresh when an older initial load resolves later", async () => {
+    let resolveInitialHistory: (response: { items: EstimateRecord[] }) => void = () => {
+      throw new Error("Initial history resolver was not initialized");
+    };
+    let resolvePostSubmitHistory: (response: { items: EstimateRecord[] }) => void =
+      () => {
+        throw new Error("Post-submit history resolver was not initialized");
+      };
+    const initialHistory = new Promise<{ items: EstimateRecord[] }>((resolve) => {
+      resolveInitialHistory = resolve;
+    });
+    const postSubmitHistory = new Promise<{ items: EstimateRecord[] }>((resolve) => {
+      resolvePostSubmitHistory = resolve;
+    });
+
+    vi.mocked(listEstimates)
+      .mockReturnValueOnce(initialHistory)
+      .mockReturnValueOnce(postSubmitHistory);
+    vi.mocked(createEstimate).mockResolvedValue(secondEstimate);
+
+    render(<EstimatorDashboard />);
+
+    expect(listEstimates).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Create estimate" }));
+
+    await waitFor(() => {
+      expect(createEstimate).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(listEstimates).toHaveBeenCalledTimes(2);
+    });
+
+    await act(async () => {
+      resolvePostSubmitHistory({ items: [secondEstimate] });
+      await postSubmitHistory;
+    });
+
+    expect(await screen.findAllByRole("checkbox")).toHaveLength(1);
+    expect(screen.getByText(/2,200 sq ft/)).toBeTruthy();
+
+    await act(async () => {
+      resolveInitialHistory({ items: [] });
+      await initialHistory;
+    });
+
+    expect(screen.getAllByRole("checkbox")).toHaveLength(1);
+    expect(screen.getByText(/2,200 sq ft/)).toBeTruthy();
+    expect(screen.queryByText("No estimates yet. Submit the form to create the first record.")).toBeNull();
+  });
 });

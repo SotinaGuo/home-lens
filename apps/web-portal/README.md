@@ -42,6 +42,14 @@ cd apps/web-portal
 PROPERTY_ESTIMATOR_API_BASE_URL=http://localhost:8001 npm run dev
 ```
 
+If dev mode fails with `EMFILE` watcher errors, raise the local file descriptor
+limit or run a production smoke instead:
+
+```bash
+npm run build
+PROPERTY_ESTIMATOR_API_BASE_URL=http://localhost:8001 npm run start
+```
+
 Open:
 
 ```text
