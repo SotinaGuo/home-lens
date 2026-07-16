@@ -108,3 +108,49 @@
 - `cd apps/web-portal && npm run build`
   - PASS
   - Next.js 15.5.20 compiled successfully and generated all routes
+
+## Second fix after re-review
+
+### Root cause
+
+`handleCompare()` started an async comparison for the selected IDs from the initiating render, but it applied the response unconditionally after `compareEstimates()` resolved. If selection changed while the request was pending, `toggleSelected()` correctly cleared the current comparison and updated `selectedIds`, but the stale request could later call `setComparison(response)` and render metrics for the old selected IDs.
+
+### Files changed
+
+- Modified `apps/web-portal/components/property-estimator/estimator-dashboard.tsx`
+  - Snapshots selected IDs before calling `compareEstimates()`.
+  - Tracks current selected IDs in a ref.
+  - Applies the comparison response only when current selected IDs still match the request snapshot.
+  - Preserves existing comparison clearing before compare, on selection change, and on compare failure.
+- Modified `apps/web-portal/lib/property-estimator/estimator-dashboard.test.tsx`
+  - Added a controlled-promise regression test for a stale in-flight comparison response after selection changes.
+
+### RED/GREEN evidence
+
+- RED: `cd apps/web-portal && npm run test -- lib/property-estimator/estimator-dashboard.test.tsx`
+  - FAIL as expected before the production fix.
+  - Failure showed `Highest price` rendered after deselecting one history record before the pending comparison promise resolved.
+- GREEN: `cd apps/web-portal && npm run test -- lib/property-estimator/estimator-dashboard.test.tsx`
+  - PASS
+  - 1 test file passed
+  - 2 tests passed
+
+### Command results
+
+- `cd apps/web-portal && npm run test -- lib/property-estimator/estimator-dashboard.test.tsx`
+  - PASS
+  - 1 test file passed
+  - 2 tests passed
+- `cd apps/web-portal && npm run test`
+  - PASS
+  - 5 test files passed
+  - 34 tests passed
+- `cd apps/web-portal && npm run lint`
+  - PASS
+  - ESLint exited 0 with `--max-warnings=0`
+- `cd apps/web-portal && npm run typecheck`
+  - PASS
+  - `tsc --noEmit` exited 0
+- `cd apps/web-portal && npm run build`
+  - PASS
+  - Next.js 15.5.20 compiled successfully and generated all routes

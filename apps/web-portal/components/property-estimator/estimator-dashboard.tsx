@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { compareEstimates, createEstimate, listEstimates } from "@/lib/property-estimator/api";
 import type { PropertyFeatureFormValues } from "@/lib/property-estimator/schemas";
 import type { ComparisonResponse, EstimateRecord } from "@/lib/property-estimator/types";
@@ -18,11 +18,16 @@ export function EstimatorDashboard() {
   const [isComparing, setIsComparing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const selectedIdsRef = useRef(selectedIds);
 
   const selectedEstimates = useMemo(
     () => estimates.filter((estimate) => selectedIds.includes(estimate.id)),
     [estimates, selectedIds]
   );
+
+  useEffect(() => {
+    selectedIdsRef.current = selectedIds;
+  }, [selectedIds]);
 
   const refreshHistory = useCallback(async () => {
     setIsHistoryLoading(true);
@@ -67,9 +72,13 @@ export function EstimatorDashboard() {
     setErrorMessage(null);
     setComparison(null);
 
+    const requestedSelectedIds = [...selectedIds];
+
     try {
-      const response = await compareEstimates({ estimate_ids: selectedIds });
-      setComparison(response);
+      const response = await compareEstimates({ estimate_ids: requestedSelectedIds });
+      if (selectedIdsMatch(selectedIdsRef.current, requestedSelectedIds)) {
+        setComparison(response);
+      }
     } catch (error) {
       setComparison(null);
       setErrorMessage(error instanceof Error ? error.message : "Unable to compare estimates");
@@ -80,11 +89,13 @@ export function EstimatorDashboard() {
 
   function toggleSelected(estimateId: string) {
     setComparison(null);
-    setSelectedIds((current) =>
-      current.includes(estimateId)
+    setSelectedIds((current) => {
+      const nextSelectedIds = current.includes(estimateId)
         ? current.filter((id) => id !== estimateId)
-        : [...current, estimateId]
-    );
+        : [...current, estimateId];
+      selectedIdsRef.current = nextSelectedIds;
+      return nextSelectedIds;
+    });
   }
 
   return (
@@ -114,5 +125,12 @@ export function EstimatorDashboard() {
         selectedEstimates={selectedEstimates}
       />
     </div>
+  );
+}
+
+function selectedIdsMatch(currentSelectedIds: string[], requestedSelectedIds: string[]) {
+  return (
+    currentSelectedIds.length === requestedSelectedIds.length &&
+    currentSelectedIds.every((id, index) => id === requestedSelectedIds[index])
   );
 }

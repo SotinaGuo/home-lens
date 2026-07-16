@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { EstimatorDashboard } from "@/components/property-estimator/estimator-dashboard";
@@ -86,6 +86,49 @@ describe("EstimatorDashboard", () => {
     await waitFor(() => {
       expect(screen.queryByText("Highest price")).toBeNull();
     });
+    expect(screen.getByRole("button", { name: "Compare selected" })).toHaveProperty(
+      "disabled",
+      true
+    );
+  });
+
+  it("does not render a stale comparison when selection changes before the request resolves", async () => {
+    let resolveComparison: (response: ComparisonResponse) => void = () => {
+      throw new Error("Comparison promise resolver was not initialized");
+    };
+    const pendingComparison = new Promise<ComparisonResponse>((resolve) => {
+      resolveComparison = resolve;
+    });
+
+    vi.mocked(listEstimates).mockResolvedValue({
+      items: [baseEstimate, secondEstimate]
+    });
+    vi.mocked(compareEstimates).mockReturnValue(pendingComparison);
+    vi.mocked(createEstimate).mockResolvedValue(baseEstimate);
+
+    render(<EstimatorDashboard />);
+
+    const checkboxes = await screen.findAllByRole("checkbox");
+    fireEvent.click(checkboxes[0]);
+    fireEvent.click(checkboxes[1]);
+
+    const compareButton = screen.getByRole("button", { name: "Compare selected" });
+    fireEvent.click(compareButton);
+
+    await waitFor(() => {
+      expect(compareEstimates).toHaveBeenCalledWith({
+        estimate_ids: ["estimate-1", "estimate-2"]
+      });
+    });
+
+    fireEvent.click(checkboxes[0]);
+
+    await act(async () => {
+      resolveComparison(comparison);
+      await pendingComparison;
+    });
+
+    expect(screen.queryByText("Highest price")).toBeNull();
     expect(screen.getByRole("button", { name: "Compare selected" })).toHaveProperty(
       "disabled",
       true
