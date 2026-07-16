@@ -23,7 +23,6 @@ import com.homelens.marketanalysis.dto.StatisticSummaryResponse;
 import com.homelens.marketanalysis.exception.InvalidMarketFilterException;
 import com.homelens.marketanalysis.model.MarketFilters;
 import com.homelens.marketanalysis.service.MarketAnalysisService;
-import com.homelens.marketanalysis.web.ApiExceptionHandler;
 
 @WebMvcTest(MarketController.class)
 class MarketControllerTest {
@@ -66,6 +65,13 @@ class MarketControllerTest {
         mockMvc.perform(get("/market/segments?minPrice=400000&maxPrice=200000"))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.detail", equalTo("minPrice cannot exceed maxPrice")));
+    }
+
+    @Test
+    void returnsBadRequestForMalformedQueryParameter() throws Exception {
+        mockMvc.perform(get("/market/segments?minBedrooms=abc"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.detail", equalTo("Invalid request parameter")));
     }
 
     private MarketSummaryResponse summary() {
