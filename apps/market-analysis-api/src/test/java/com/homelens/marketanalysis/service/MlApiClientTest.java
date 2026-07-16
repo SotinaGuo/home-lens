@@ -1,0 +1,74 @@
+package com.homelens.marketanalysis.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.net.URI;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClient;
+
+import com.homelens.marketanalysis.exception.MlApiUnavailableException;
+import com.homelens.marketanalysis.model.PropertyFeatures;
+
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+
+class MlApiClientTest {
+
+    private MockWebServer server;
+
+    @BeforeEach
+    void startServer() throws Exception {
+        server = new MockWebServer();
+        server.start();
+    }
+
+    @AfterEach
+    void stopServer() throws Exception {
+        server.shutdown();
+    }
+
+    @Test
+    void returnsPredictedPriceFromMlApi() throws Exception {
+        server.enqueue(new MockResponse()
+            .setResponseCode(200)
+            .setHeader("content-type", "application/json")
+            .setBody("{\"count\":1,\"predictions\":[{\"predicted_price\":250829.56}]}"));
+
+        MlApiClient client = new MlApiClient(
+            RestClient.builder(),
+            URI.create(server.url("/").toString())
+        );
+
+        double predictedPrice = client.predict(features());
+
+        assertThat(predictedPrice).isEqualTo(250829.56);
+        var request = server.takeRequest();
+        assertThat(request.getPath()).isEqualTo("/predict");
+        assertThat(request.getMethod()).isEqualTo("POST");
+        assertThat(request.getBody().readUtf8()).contains("square_footage");
+    }
+
+    @Test
+    void throwsWhenMlApiReturnsError() {
+        server.enqueue(new MockResponse()
+            .setResponseCode(500)
+            .setBody("{\"detail\":\"Prediction failed\"}"));
+
+        MlApiClient client = new MlApiClient(
+            RestClient.builder(),
+            URI.create(server.url("/").toString())
+        );
+
+        assertThatThrownBy(() -> client.predict(features()))
+            .isInstanceOf(MlApiUnavailableException.class)
+            .hasMessageContaining("Prediction service unavailable");
+    }
+
+    private PropertyFeatures features() {
+        return new PropertyFeatures(1550, 3, 2.0, 1997, 6800, 4.1, 7.6);
+    }
+}

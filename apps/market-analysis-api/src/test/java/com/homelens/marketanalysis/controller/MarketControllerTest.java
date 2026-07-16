@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,14 +14,18 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.homelens.marketanalysis.dto.MarketPositionResponse;
 import com.homelens.marketanalysis.dto.MarketSegmentResponse;
 import com.homelens.marketanalysis.dto.MarketSummaryResponse;
 import com.homelens.marketanalysis.dto.PriceBucketResponse;
 import com.homelens.marketanalysis.dto.StatisticSummaryResponse;
+import com.homelens.marketanalysis.dto.WhatIfResponse;
 import com.homelens.marketanalysis.exception.InvalidMarketFilterException;
+import com.homelens.marketanalysis.exception.MlApiUnavailableException;
 import com.homelens.marketanalysis.model.MarketFilters;
 import com.homelens.marketanalysis.service.MarketAnalysisService;
 
@@ -72,6 +77,54 @@ class MarketControllerTest {
         mockMvc.perform(get("/market/segments?minBedrooms=abc"))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.detail", equalTo("Invalid request parameter")));
+    }
+
+    @Test
+    void returnsWhatIfResponse() throws Exception {
+        given(marketAnalysisService.whatIf(any())).willReturn(new WhatIfResponse(
+            250829.56,
+            new MarketPositionResponse(46.0, false, -12450.44),
+            List.of()
+        ));
+
+        mockMvc.perform(post("/market/what-if")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "square_footage": 1550,
+                      "bedrooms": 3,
+                      "bathrooms": 2,
+                      "year_built": 1997,
+                      "lot_size": 6800,
+                      "distance_to_city_center": 4.1,
+                      "school_rating": 7.6
+                    }
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.predicted_price", equalTo(250829.56)))
+            .andExpect(jsonPath("$.market_position.percentile", equalTo(46.0)));
+    }
+
+    @Test
+    void mapsMlApiFailureToBadGateway() throws Exception {
+        given(marketAnalysisService.whatIf(any()))
+            .willThrow(new MlApiUnavailableException("Prediction service unavailable"));
+
+        mockMvc.perform(post("/market/what-if")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "square_footage": 1550,
+                      "bedrooms": 3,
+                      "bathrooms": 2,
+                      "year_built": 1997,
+                      "lot_size": 6800,
+                      "distance_to_city_center": 4.1,
+                      "school_rating": 7.6
+                    }
+                    """))
+            .andExpect(status().isBadGateway())
+            .andExpect(jsonPath("$.detail", equalTo("Prediction service unavailable")));
     }
 
     private MarketSummaryResponse summary() {

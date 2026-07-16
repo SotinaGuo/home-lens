@@ -17,9 +17,11 @@ import com.homelens.marketanalysis.model.PropertyFeatures;
 class MarketAnalysisServiceTest {
 
     private final DatasetLoader datasetLoader = Mockito.mock(DatasetLoader.class);
+    private final MlApiClient mlApiClient = Mockito.mock(MlApiClient.class);
     private final MarketAnalysisService service = new MarketAnalysisService(
         datasetLoader,
-        new StatisticsCalculator()
+        new StatisticsCalculator(),
+        mlApiClient
     );
 
     @Test
@@ -58,6 +60,30 @@ class MarketAnalysisServiceTest {
         assertThatThrownBy(() -> service.segments(filters))
             .isInstanceOf(InvalidMarketFilterException.class)
             .hasMessageContaining("minPrice cannot exceed maxPrice");
+    }
+
+    @Test
+    void returnsWhatIfPredictionWithMarketPosition() {
+        MlApiClient mlApiClient = Mockito.mock(MlApiClient.class);
+        MarketAnalysisService service = new MarketAnalysisService(
+            datasetLoader,
+            new StatisticsCalculator(),
+            mlApiClient
+        );
+        given(datasetLoader.records()).willReturn(List.of(
+            record(1, 200000, 3, 7.0, 5.0),
+            record(2, 300000, 3, 8.0, 6.0),
+            record(3, 400000, 4, 9.0, 7.0)
+        ));
+        var features = new PropertyFeatures(1550, 3, 2.0, 1997, 6800, 4.1, 7.6);
+        given(mlApiClient.predict(features)).willReturn(350000.0);
+
+        var response = service.whatIf(features);
+
+        assertThat(response.predictedPrice()).isEqualTo(350000.0);
+        assertThat(response.marketPosition().percentile()).isEqualTo(66.67);
+        assertThat(response.marketPosition().aboveMarketAverage()).isTrue();
+        assertThat(response.nearestRecords()).extracting("id").containsExactly(2, 3, 1);
     }
 
     private MarketPropertyRecord record(

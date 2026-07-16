@@ -7,24 +7,31 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.homelens.marketanalysis.dto.MarketSegmentResponse;
+import com.homelens.marketanalysis.dto.MarketPositionResponse;
 import com.homelens.marketanalysis.dto.MarketSummaryResponse;
 import com.homelens.marketanalysis.dto.PropertyRecordResponse;
+import com.homelens.marketanalysis.dto.StatisticSummaryResponse;
+import com.homelens.marketanalysis.dto.WhatIfResponse;
 import com.homelens.marketanalysis.exception.InvalidMarketFilterException;
 import com.homelens.marketanalysis.model.MarketFilters;
 import com.homelens.marketanalysis.model.MarketPropertyRecord;
+import com.homelens.marketanalysis.model.PropertyFeatures;
 
 @Service
 public class MarketAnalysisService {
 
     private final DatasetLoader datasetLoader;
     private final StatisticsCalculator statisticsCalculator;
+    private final MlApiClient mlApiClient;
 
     public MarketAnalysisService(
         DatasetLoader datasetLoader,
-        StatisticsCalculator statisticsCalculator
+        StatisticsCalculator statisticsCalculator,
+        MlApiClient mlApiClient
     ) {
         this.datasetLoader = datasetLoader;
         this.statisticsCalculator = statisticsCalculator;
+        this.mlApiClient = mlApiClient;
     }
 
     @Cacheable("marketSummary")
@@ -45,6 +52,30 @@ public class MarketAnalysisService {
             filtered.size(),
             filtered.isEmpty() ? null : summaryFor(filtered),
             filtered.stream().map(PropertyRecordResponse::from).toList()
+        );
+    }
+
+    public WhatIfResponse whatIf(PropertyFeatures features) {
+        double predictedPrice = mlApiClient.predict(features);
+        List<MarketPropertyRecord> records = datasetLoader.records();
+        StatisticSummaryResponse priceStats = statisticsCalculator.priceStats(records);
+        double averagePrice = priceStats == null ? 0 : priceStats.average();
+        double percentile = percentile(predictedPrice, records);
+
+        List<PropertyRecordResponse> nearestRecords = records.stream()
+            .sorted(Comparator.comparingDouble(record -> Math.abs(record.price() - predictedPrice)))
+            .limit(3)
+            .map(PropertyRecordResponse::from)
+            .toList();
+
+        return new WhatIfResponse(
+            round(predictedPrice),
+            new MarketPositionResponse(
+                percentile,
+                predictedPrice > averagePrice,
+                round(predictedPrice - averagePrice)
+            ),
+            nearestRecords
         );
     }
 
@@ -111,5 +142,19 @@ public class MarketAnalysisService {
             && filters.maxDistanceToCityCenter() < 0) {
             throw new InvalidMarketFilterException("maxDistanceToCityCenter cannot be negative");
         }
+    }
+
+    private double percentile(double predictedPrice, List<MarketPropertyRecord> records) {
+        if (records.isEmpty()) {
+            return 0;
+        }
+        long belowOrEqual = records.stream()
+            .filter(record -> record.price() <= predictedPrice)
+            .count();
+        return round((belowOrEqual * 100.0) / records.size());
+    }
+
+    private double round(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 }
