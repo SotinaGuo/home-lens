@@ -3,6 +3,9 @@ package com.homelens.marketanalysis.service;
 import java.net.URI;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -18,12 +21,16 @@ public class MlApiClient {
     private final RestClient restClient;
     private final URI mlApiBaseUrl;
 
+    @Autowired
     public MlApiClient(RestClient.Builder builder, MarketAnalysisProperties properties) {
         this(builder, properties.mlApiBaseUrl());
     }
 
     MlApiClient(RestClient.Builder builder, URI mlApiBaseUrl) {
-        this.restClient = builder.baseUrl(mlApiBaseUrl.toString()).build();
+        this.restClient = builder
+            .baseUrl(mlApiBaseUrl.toString())
+            .requestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+            .build();
         this.mlApiBaseUrl = mlApiBaseUrl;
     }
 

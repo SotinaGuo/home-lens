@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.homelens.marketanalysis.config.MarketAnalysisProperties;
@@ -25,6 +26,7 @@ public class DatasetLoader {
     private final Path workbookPath;
     private final List<MarketPropertyRecord> records;
 
+    @Autowired
     public DatasetLoader(MarketAnalysisProperties properties) {
         this(properties.workbookPath());
     }

@@ -49,7 +49,18 @@ class MlApiClientTest {
         var request = server.takeRequest();
         assertThat(request.getPath()).isEqualTo("/predict");
         assertThat(request.getMethod()).isEqualTo("POST");
-        assertThat(request.getBody().readUtf8()).contains("square_footage");
+        assertThat(request.getHeader("content-type")).contains("application/json");
+        assertThat(request.getHeader("transfer-encoding")).isNull();
+        assertThat(request.getHeader("upgrade")).isNull();
+        String requestBody = request.getBody().readUtf8();
+        assertThat(requestBody)
+            .contains("\"square_footage\":1550")
+            .contains("\"year_built\":1997")
+            .contains("\"lot_size\":6800")
+            .contains("\"distance_to_city_center\":4.1")
+            .contains("\"school_rating\":7.6")
+            .doesNotContain("squareFootage")
+            .doesNotContain("yearBuilt");
     }
 
     @Test
