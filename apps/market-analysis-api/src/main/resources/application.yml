@@ -1,0 +1,11 @@
+server:
+  port: 8002
+
+spring:
+  application:
+    name: market-analysis-api
+
+market:
+  analysis:
+    workbook-path: ${MARKET_DATA_WORKBOOK_PATH:../ml-api/data/House Price Dataset & Test Data For Prediction.xlsx}
+    ml-api-base-url: ${ML_API_BASE_URL:http://localhost:8000}
