@@ -46,3 +46,46 @@ cd apps/web-portal && npm run build
 - Preserved backend status codes and JSON payloads for successful and validation-error responses.
 - Mapped backend fetch failures to `502` and retained the requested `504` timeout handling branch.
 - Set all route handlers to `dynamic = "force-dynamic"` and `cache: "no-store"` via the shared proxy helper.
+
+## Fix after review
+
+### Files changed
+
+- `apps/web-portal/lib/property-estimator/server-api.test.ts`
+- `apps/web-portal/app/api/property-estimator/estimates/route.ts`
+- `.superpowers/sdd/task-3-report.md`
+
+### Exact red/green command results
+
+```bash
+$ cd apps/web-portal && npm run test -- lib/property-estimator/server-api.test.ts
+FAIL lib/property-estimator/server-api.test.ts > GET /api/property-estimator/estimates > forwards supported query parameters to the backend estimates endpoint
+AssertionError: expected "proxyBackendRequest" to be called with arguments: [ '/estimates?limit=5' ]
+Received:
+  1st proxyBackendRequest call:
+  [
+-   "/estimates?limit=5",
++   "/estimates",
+  ]
+Test Files  1 failed (1)
+Tests  1 failed | 6 passed (7)
+
+$ cd apps/web-portal && npm run test -- lib/property-estimator/server-api.test.ts
+✓ lib/property-estimator/server-api.test.ts (7 tests)
+Test Files  1 passed (1)
+Tests  7 passed (7)
+
+$ cd apps/web-portal && npm run lint
+> eslint . --max-warnings=0
+exit 0
+
+$ cd apps/web-portal && npm run typecheck
+> tsc --noEmit
+exit 0
+
+$ cd apps/web-portal && npm run build
+> next build
+✓ Compiled successfully
+✓ Generating static pages (4/4)
+exit 0
+```
