@@ -10,7 +10,7 @@ type SegmentResultsProps = {
 export function SegmentResults({ isLoading, segment }: SegmentResultsProps) {
   if (isLoading) {
     return (
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="surface-card p-5">
         <p className="text-sm text-slate-600">Loading filtered market segment...</p>
       </section>
     );
@@ -18,7 +18,7 @@ export function SegmentResults({ isLoading, segment }: SegmentResultsProps) {
 
   if (!segment) {
     return (
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="surface-card p-5">
         <p className="text-sm text-slate-600">
           Apply filters to inspect a focused market segment.
         </p>
@@ -28,7 +28,7 @@ export function SegmentResults({ isLoading, segment }: SegmentResultsProps) {
 
   return (
     <div className="space-y-4">
-      <section className="grid gap-4 md:grid-cols-4">
+      <section className="grid gap-3 md:grid-cols-4">
         <Metric label="Matching records" value={formatNumber(segment.record_count)} />
         {segment.statistics ? (
           <>
@@ -52,9 +52,9 @@ export function SegmentResults({ isLoading, segment }: SegmentResultsProps) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
-      <p className="mt-2 text-xl font-bold text-slate-950">{value}</p>
+    <div className="metric-card">
+      <p className="metric-label">{label}</p>
+      <p className="mt-1 text-xl font-semibold text-slate-950">{value}</p>
     </div>
   );
 }

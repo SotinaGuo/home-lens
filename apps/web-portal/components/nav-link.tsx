@@ -16,10 +16,11 @@ export function NavLink({ href, children }: NavLinkProps) {
     <Link
       className={
         isActive
-          ? "rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm"
-          : "rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+          ? "whitespace-nowrap rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-950 shadow-sm ring-1 ring-slate-200"
+          : "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-950"
       }
       href={href}
+      aria-current={isActive ? "page" : undefined}
     >
       {children}
     </Link>

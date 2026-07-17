@@ -17,15 +17,15 @@ type PriceBucketChartProps = {
 
 export function PriceBucketChart({ buckets }: PriceBucketChartProps) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="surface-card p-5">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+        <p className="eyebrow">
           Price distribution
         </p>
-        <h2 className="mt-2 text-2xl font-bold text-slate-950">Market price buckets</h2>
+        <h2 className="section-title">Market price buckets</h2>
       </div>
       {buckets.length === 0 ? (
-        <p className="mt-6 text-sm text-slate-600">No price bucket data available.</p>
+        <p className="empty-state mt-5">No price bucket data available.</p>
       ) : (
         <div className="mt-6 h-72">
           <ResponsiveContainer height="100%" width="100%">
@@ -34,7 +34,7 @@ export function PriceBucketChart({ buckets }: PriceBucketChartProps) {
               <XAxis dataKey="label" tick={{ fontSize: 12 }} />
               <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
               <Tooltip />
-              <Bar dataKey="count" fill="#2563eb" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="count" fill="#0f172a" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -25,11 +25,11 @@ export function MarketSummaryCards({ summary }: MarketSummaryCardsProps) {
       ];
 
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
       {cards.map(([label, value]) => (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={label}>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
+        <div className="metric-card" key={label}>
+          <p className="metric-label">{label}</p>
+          <p className="metric-value">{value}</p>
         </div>
       ))}
     </section>

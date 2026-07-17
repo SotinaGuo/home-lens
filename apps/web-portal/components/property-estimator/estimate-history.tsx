@@ -15,34 +15,34 @@ export function EstimateHistory({
   selectedIds
 }: EstimateHistoryProps) {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
+    <section className="surface-card p-5 md:p-6">
+      <div className="section-header">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+          <p className="eyebrow">
             History
           </p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">Recent estimates</h2>
+          <h2 className="section-title">Recent estimates</h2>
         </div>
-        {isLoading ? <span className="text-sm text-slate-500">Loading...</span> : null}
+        {isLoading ? <span className="status-pill">Loading...</span> : null}
       </div>
-      <p className="mt-2 text-sm text-slate-600">
+      <p className="section-copy">
         History is stored in the Python backend memory and clears when that service restarts.
       </p>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-5 space-y-2.5">
         {estimates.length === 0 ? (
-          <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+          <p className="empty-state">
             No estimates yet. Submit the form to create the first record.
           </p>
         ) : (
           estimates.map((estimate) => (
             <label
-              className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 p-4 hover:border-brand-100 hover:bg-brand-50"
+              className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:bg-slate-50"
               key={estimate.id}
             >
               <input
                 checked={selectedIds.includes(estimate.id)}
-                className="mt-1"
+                className="mt-1 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-600"
                 onChange={() => onToggleSelected(estimate.id)}
                 type="checkbox"
               />

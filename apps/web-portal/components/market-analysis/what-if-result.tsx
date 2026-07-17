@@ -13,9 +13,9 @@ type WhatIfResultProps = {
 export function WhatIfResult({ result }: WhatIfResultProps) {
   if (!result) {
     return (
-      <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-5">
-        <h3 className="text-lg font-bold text-slate-950">Prediction result</h3>
-        <p className="mt-2 text-sm text-slate-600">
+      <section className="empty-state">
+        <h3 className="font-semibold text-slate-900">Prediction result</h3>
+        <p className="mt-1">
           Submit a property scenario to see predicted price and market position.
         </p>
       </section>
@@ -26,14 +26,14 @@ export function WhatIfResult({ result }: WhatIfResultProps) {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border border-brand-100 bg-brand-50 p-5 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand-700">
+      <section className="rounded-lg border border-slate-200 bg-slate-950 p-5 text-white shadow-sm">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">
           Predicted price
         </p>
-        <p className="mt-2 text-4xl font-bold text-brand-950">
+        <p className="mt-2 text-4xl font-semibold tracking-tight">
           {formatCurrency(result.predicted_price)}
         </p>
-        <p className="mt-3 text-sm text-brand-900">
+        <p className="mt-3 text-sm text-slate-300">
           {position.above_market_average ? "Above" : "Below"} market average by{" "}
           {formatSignedCurrency(position.difference_from_average)} ·{" "}
           {formatPercent(position.percentile)} percentile

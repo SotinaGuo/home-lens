@@ -3,47 +3,47 @@ import Link from "next/link";
 const appCards = [
   {
     title: "Property Value Estimator",
-    status: "Live in this phase",
+    status: "Prediction workflow",
     description:
-      "Submit property details, call the Python estimator backend, review estimate history, and compare multiple properties.",
+      "Create estimates, review recent predictions, and compare selected properties.",
     href: "/property-estimator"
   },
   {
     title: "Property Market Analysis",
-    status: "Live Java module",
+    status: "Market intelligence",
     description:
-      "Explore market statistics, filter comparable property segments, and run what-if analysis through the Java backend.",
+      "Review market statistics, filter comparable segments, and run what-if analysis.",
     href: "/market-analysis"
   }
 ];
 
 export default function HomePage() {
   return (
-    <main className="space-y-10">
-      <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
-          HomeLens
-        </p>
-        <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-slate-950">
-          See property value and market signals through one clear lens.
+    <main className="page-stack">
+      <section className="page-header">
+        <p className="eyebrow">HomeLens</p>
+        <h1 className="page-title">
+          Property intelligence for valuation and market analysis
         </h1>
-        <p className="mt-4 max-w-3xl text-lg text-slate-600">
-          HomeLens demonstrates a fullstack housing analytics workflow. App 1 estimates
-          individual property values through the Python backend; App 2 explores market
-          segments through the Java Spring Boot backend.
+        <p className="page-description">
+          A focused workspace for estimating property value, reviewing market signals,
+          and comparing scenarios across the housing dataset.
         </p>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2">
+      <section className="grid gap-4 md:grid-cols-2">
         {appCards.map((card) => (
           <Link
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-100 hover:shadow-md"
+            className="group surface-card p-5 transition hover:-translate-y-0.5 hover:border-slate-300 focus-visible:outline-brand-600"
             href={card.href}
             key={card.title}
           >
-            <p className="text-sm font-semibold text-brand-600">{card.status}</p>
-            <h2 className="mt-3 text-2xl font-bold text-slate-950">{card.title}</h2>
-            <p className="mt-3 text-slate-600">{card.description}</p>
+            <p className="status-pill">{card.status}</p>
+            <h2 className="mt-4 text-xl font-semibold tracking-tight text-slate-950 group-hover:text-brand-700">
+              {card.title}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{card.description}</p>
+            <p className="mt-5 text-sm font-semibold text-slate-900">Open workspace →</p>
           </Link>
         ))}
       </section>

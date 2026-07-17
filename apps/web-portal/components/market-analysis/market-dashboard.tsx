@@ -93,9 +93,9 @@ export function MarketDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 md:space-y-6">
       {errorMessage ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="error-state">
           {errorMessage}
         </div>
       ) : null}
@@ -104,12 +104,12 @@ export function MarketDashboard() {
       <MarketSummaryCards summary={summary} />
       <PriceBucketChart buckets={summary?.price_buckets ?? []} />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <SegmentFilterForm isLoading={isSegmentLoading} onSubmit={handleSegmentSubmit} />
         <SegmentResults isLoading={isSegmentLoading} segment={segment} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <WhatIfForm isSubmitting={isWhatIfSubmitting} onSubmit={handleWhatIfSubmit} />
         <WhatIfResult result={whatIfResult} />
       </div>

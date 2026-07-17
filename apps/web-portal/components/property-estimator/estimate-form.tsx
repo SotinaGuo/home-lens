@@ -42,17 +42,17 @@ export function EstimateForm({ isSubmitting, onSubmit }: EstimateFormProps) {
 
   return (
     <form
-      className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="surface-card p-5 md:p-6"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+        <p className="eyebrow">
           Property input
         </p>
-        <h2 className="mt-2 text-2xl font-bold text-slate-950">
+        <h2 className="section-title">
           Estimate a property value
         </h2>
-        <p className="mt-2 text-sm text-slate-600">
+        <p className="section-copy">
           Fill in the same features used by the ML model.
         </p>
       </div>
@@ -62,13 +62,13 @@ export function EstimateForm({ isSubmitting, onSubmit }: EstimateFormProps) {
           <label className="block" key={field.name}>
             <span className="text-sm font-medium text-slate-700">{field.label}</span>
             <input
-              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-slate-950 shadow-sm outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+              className="input mt-1"
               step={field.step ?? "1"}
               type="number"
               {...register(field.name)}
             />
             {errors[field.name] ? (
-              <span className="mt-1 block text-sm text-red-600">
+              <span className="mt-1 block text-xs font-medium text-red-600">
                 {errors[field.name]?.message}
               </span>
             ) : null}
@@ -77,7 +77,7 @@ export function EstimateForm({ isSubmitting, onSubmit }: EstimateFormProps) {
       </div>
 
       <button
-        className="mt-6 inline-flex w-full justify-center rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+        className="btn-primary mt-6 w-full"
         disabled={isSubmitting}
         type="submit"
       >

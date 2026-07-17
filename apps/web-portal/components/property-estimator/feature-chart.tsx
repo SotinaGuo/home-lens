@@ -31,7 +31,7 @@ export function FeatureChart({ features }: FeatureChartProps) {
           <XAxis dataKey="label" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="value" fill="#2563eb" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="value" fill="#0f172a" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -110,12 +110,12 @@ export function EstimatorDashboard() {
   return (
     <div className="space-y-6">
       {errorMessage ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="error-state">
           {errorMessage}
         </div>
       ) : null}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <EstimateForm isSubmitting={isSubmitting} onSubmit={handleSubmit} />
         <EstimateResultCard estimate={currentEstimate} />
       </div>

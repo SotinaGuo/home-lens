@@ -2,17 +2,17 @@ import { EstimatorDashboard } from "@/components/property-estimator/estimator-da
 
 export default function PropertyEstimatorPage() {
   return (
-    <main className="space-y-8">
-      <section>
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+    <main className="page-stack">
+      <section className="page-header">
+        <p className="eyebrow">
           App 1 · Python Backend
         </p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">
+        <h1 className="page-title">
           Property Value Estimator
         </h1>
-        <p className="mt-3 max-w-3xl text-slate-600">
-          Submit property details, call the Python backend through the Next.js proxy,
-          and review estimates returned by the ML model pipeline.
+        <p className="page-description">
+          Enter property features, generate a predicted value, then compare estimates
+          from the current backend session.
         </p>
       </section>
 

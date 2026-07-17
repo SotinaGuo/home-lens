@@ -41,11 +41,11 @@ export function WhatIfForm({ isSubmitting, onSubmit }: WhatIfFormProps) {
   });
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+    <section className="surface-card p-5">
+      <p className="eyebrow">
         What-if analysis
       </p>
-      <h2 className="mt-2 text-2xl font-bold text-slate-950">
+      <h2 className="section-title">
         Test a property against the market
       </h2>
       <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleSubmit(onSubmit)}>
@@ -58,7 +58,7 @@ export function WhatIfForm({ isSubmitting, onSubmit }: WhatIfFormProps) {
               {...register(field.name)}
             />
             {errors[field.name]?.message ? (
-              <span className="mt-1 block text-xs text-red-600">
+              <span className="mt-1 block text-xs font-medium text-red-600">
                 {errors[field.name]?.message}
               </span>
             ) : null}
@@ -66,7 +66,7 @@ export function WhatIfForm({ isSubmitting, onSubmit }: WhatIfFormProps) {
         ))}
         <div className="md:col-span-2">
           <button
-            className="rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="btn-primary"
             disabled={isSubmitting}
             type="submit"
           >

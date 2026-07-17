@@ -13,36 +13,36 @@ export function PropertyRecordTable({
   emptyMessage
 }: PropertyRecordTableProps) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="text-lg font-bold text-slate-950">{title}</h3>
+    <section className="surface-card p-5">
+      <h3 className="text-base font-semibold text-slate-950">{title}</h3>
       {records.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-600">{emptyMessage}</p>
+        <p className="empty-state mt-4">{emptyMessage}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-sm">
+        <div className="table-wrap mt-4">
+          <table className="data-table">
             <thead>
-              <tr className="text-left text-slate-500">
-                <th className="py-2 pr-4 font-semibold">ID</th>
-                <th className="py-2 pr-4 font-semibold">Price</th>
-                <th className="py-2 pr-4 font-semibold">Sq ft</th>
-                <th className="py-2 pr-4 font-semibold">Beds</th>
-                <th className="py-2 pr-4 font-semibold">Baths</th>
-                <th className="py-2 pr-4 font-semibold">School</th>
-                <th className="py-2 pr-4 font-semibold">City distance</th>
+              <tr>
+                <th>ID</th>
+                <th>Price</th>
+                <th>Sq ft</th>
+                <th>Beds</th>
+                <th>Baths</th>
+                <th>School</th>
+                <th>City distance</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
+            <tbody>
               {records.map((record) => (
                 <tr key={record.id}>
-                  <td className="py-2 pr-4">{record.id}</td>
-                  <td className="py-2 pr-4 font-semibold text-slate-950">
+                  <td>{record.id}</td>
+                  <td className="font-semibold text-slate-950">
                     {formatCurrency(record.price)}
                   </td>
-                  <td className="py-2 pr-4">{formatNumber(record.square_footage)}</td>
-                  <td className="py-2 pr-4">{record.bedrooms}</td>
-                  <td className="py-2 pr-4">{record.bathrooms}</td>
-                  <td className="py-2 pr-4">{formatNumber(record.school_rating)}</td>
-                  <td className="py-2 pr-4">
+                  <td>{formatNumber(record.square_footage)}</td>
+                  <td>{record.bedrooms}</td>
+                  <td>{record.bathrooms}</td>
+                  <td>{formatNumber(record.school_rating)}</td>
+                  <td>
                     {formatNumber(record.distance_to_city_center)} mi
                   </td>
                 </tr>

@@ -28,16 +28,16 @@ export function SegmentFilterForm({ isLoading, onSubmit }: SegmentFilterFormProp
   });
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="surface-card p-5">
+      <div className="section-header">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+          <p className="eyebrow">
             Segment analysis
           </p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">Filter market records</h2>
+          <h2 className="section-title">Filter market records</h2>
         </div>
         <button
-          className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          className="btn-secondary"
           onClick={() => reset(defaultSegmentFilters)}
           type="button"
         >
@@ -65,7 +65,7 @@ export function SegmentFilterForm({ isLoading, onSubmit }: SegmentFilterFormProp
         </Field>
         <div className="md:col-span-3">
           <button
-            className="rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="btn-primary"
             disabled={isLoading}
             type="submit"
           >
@@ -90,7 +90,7 @@ function Field({
     <label className="block">
       <span className="text-sm font-medium text-slate-700">{label}</span>
       <div className="mt-1">{children}</div>
-      {error ? <span className="mt-1 block text-xs text-red-600">{error}</span> : null}
+      {error ? <span className="mt-1 block text-xs font-medium text-red-600">{error}</span> : null}
     </label>
   );
 }
