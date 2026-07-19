@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import type { PriceBucket } from "@/lib/market-analysis/types";
+import type { PriceBucket } from "@/features/market-analysis/types";
 
 type PriceBucketChartProps = {
   buckets: PriceBucket[];

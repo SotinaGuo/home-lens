@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GET as getSegmentsRoute } from "@/app/api/market-analysis/segments/route";
 import { POST as postWhatIfRoute } from "@/app/api/market-analysis/what-if/route";
-import { proxyMarketBackendRequest } from "./server-api";
+import { proxyMarketBackendRequest } from "../server-api";
 
 describe("proxyMarketBackendRequest", () => {
   afterEach(() => {
@@ -88,7 +88,7 @@ describe("market analysis route handlers", () => {
 
   it("forwards segment query parameters to the Java endpoint", async () => {
     const proxySpy = vi
-      .spyOn(await import("./server-api"), "proxyMarketBackendRequest")
+      .spyOn(await import("../server-api"), "proxyMarketBackendRequest")
       .mockResolvedValue(Response.json({ records: [] }));
 
     await getSegmentsRoute(
@@ -104,7 +104,7 @@ describe("market analysis route handlers", () => {
 
   it("forwards what-if JSON body to the Java endpoint", async () => {
     const proxySpy = vi
-      .spyOn(await import("./server-api"), "proxyMarketBackendRequest")
+      .spyOn(await import("../server-api"), "proxyMarketBackendRequest")
       .mockResolvedValue(Response.json({ predicted_price: 250000 }));
 
     await postWhatIfRoute(

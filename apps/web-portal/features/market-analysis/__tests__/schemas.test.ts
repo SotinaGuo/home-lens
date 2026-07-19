@@ -4,7 +4,7 @@ import {
   defaultWhatIfValues,
   segmentFilterSchema,
   whatIfSchema
-} from "./schemas";
+} from "../schemas";
 
 describe("market analysis schemas", () => {
   it("accepts the default what-if values", () => {

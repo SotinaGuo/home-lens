@@ -7,7 +7,7 @@ import {
   defaultWhatIfValues,
   whatIfSchema,
   type WhatIfFormValues
-} from "@/lib/market-analysis/schemas";
+} from "@/features/market-analysis/schemas";
 
 type WhatIfFormProps = {
   isSubmitting: boolean;

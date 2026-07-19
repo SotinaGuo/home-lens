@@ -5,7 +5,7 @@ import {
   formatPercent,
   formatSignedCurrency,
   marketFieldLabels
-} from "./formatting";
+} from "../formatting";
 
 describe("market analysis formatting", () => {
   it("formats currency without decimals", () => {

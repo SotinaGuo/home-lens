@@ -1,5 +1,5 @@
-import { formatCurrency, formatNumber } from "@/lib/market-analysis/formatting";
-import type { MarketSummaryResponse } from "@/lib/market-analysis/types";
+import { formatCurrency, formatNumber } from "@/features/market-analysis/formatting";
+import type { MarketSummaryResponse } from "@/features/market-analysis/types";
 
 type MarketSummaryCardsProps = {
   summary: MarketSummaryResponse | null;

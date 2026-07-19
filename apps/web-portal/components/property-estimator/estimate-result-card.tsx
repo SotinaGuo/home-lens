@@ -1,5 +1,5 @@
-import { featureLabels, formatCurrency, formatNumber } from "@/lib/property-estimator/formatting";
-import type { EstimateRecord } from "@/lib/property-estimator/types";
+import { featureLabels, formatCurrency, formatNumber } from "@/features/property-estimator/formatting";
+import type { EstimateRecord } from "@/features/property-estimator/types";
 import { FeatureChart } from "./feature-chart";
 
 type EstimateResultCardProps = {

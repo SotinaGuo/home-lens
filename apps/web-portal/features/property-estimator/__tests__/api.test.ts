@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { compareEstimates, createEstimate, listEstimates } from "./api";
-import type { PropertyFeatures } from "./types";
+import { compareEstimates, createEstimate, listEstimates } from "../api";
+import type { PropertyFeatures } from "../types";
 
 const propertyFeatures: PropertyFeatures = {
   square_footage: 1550,

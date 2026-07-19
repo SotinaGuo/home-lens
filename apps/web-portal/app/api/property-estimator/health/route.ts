@@ -1,4 +1,4 @@
-import { proxyBackendRequest } from "@/lib/property-estimator/server-api";
+import { proxyBackendRequest } from "@/features/property-estimator/server-api";
 
 export const dynamic = "force-dynamic";
 

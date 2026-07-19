@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { featureLabels, formatCurrency, formatDateTime, formatNumber } from "./formatting";
+import { featureLabels, formatCurrency, formatDateTime, formatNumber } from "../formatting";
 
 afterEach(() => {
   vi.restoreAllMocks();

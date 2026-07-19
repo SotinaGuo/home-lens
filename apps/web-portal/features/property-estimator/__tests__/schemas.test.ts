@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { propertyFeatureSchema } from "./schemas";
+import { propertyFeatureSchema } from "../schemas";
 
 const validPayload = {
   square_footage: 1550,

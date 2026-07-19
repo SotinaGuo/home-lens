@@ -2,10 +2,10 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { EstimatorDashboard } from "@/components/property-estimator/estimator-dashboard";
-import { compareEstimates, createEstimate, listEstimates } from "./api";
-import type { ComparisonResponse, EstimateRecord } from "./types";
+import { compareEstimates, createEstimate, listEstimates } from "../api";
+import type { ComparisonResponse, EstimateRecord } from "../types";
 
-vi.mock("./api", () => ({
+vi.mock("../api", () => ({
   compareEstimates: vi.fn(),
   createEstimate: vi.fn(),
   listEstimates: vi.fn()

@@ -7,7 +7,7 @@ import {
   defaultSegmentFilters,
   segmentFilterSchema,
   type SegmentFilterFormValues
-} from "@/lib/market-analysis/schemas";
+} from "@/features/market-analysis/schemas";
 
 type SegmentFilterFormProps = {
   isLoading: boolean;

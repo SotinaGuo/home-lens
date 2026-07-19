@@ -131,4 +131,37 @@ body {
   .data-table tbody tr {
     @apply transition hover:bg-slate-50;
   }
+
+  .data-toolbar {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .table-sort-button {
+    @apply inline-flex w-full items-center justify-between gap-2 rounded-sm text-left font-semibold text-inherit outline-none transition hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-brand-100;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  header,
+  nav,
+  button,
+  .data-toolbar,
+  .input {
+    display: none !important;
+  }
+
+  .surface-card,
+  .page-header {
+    border: 1px solid #cbd5e1;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .table-wrap {
+    overflow: visible;
+  }
 }

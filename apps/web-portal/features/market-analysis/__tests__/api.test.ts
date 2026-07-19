@@ -4,8 +4,8 @@ import {
   getMarketSegments,
   getMarketSummary,
   runWhatIf
-} from "./api";
-import type { PropertyFeatures } from "./types";
+} from "../api";
+import type { PropertyFeatures } from "../types";
 
 const features: PropertyFeatures = {
   square_footage: 1550,

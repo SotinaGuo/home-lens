@@ -2,8 +2,8 @@ import {
   formatCurrency,
   formatPercent,
   formatSignedCurrency
-} from "@/lib/market-analysis/formatting";
-import type { WhatIfResponse } from "@/lib/market-analysis/types";
+} from "@/features/market-analysis/formatting";
+import type { WhatIfResponse } from "@/features/market-analysis/types";
 import { PropertyRecordTable } from "./property-record-table";
 
 type WhatIfResultProps = {

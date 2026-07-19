@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MarketDashboard } from "@/components/market-analysis/market-dashboard";
-import * as api from "./api";
+import * as api from "../api";
 
 vi.mock("recharts", () => ({
   Bar: () => null,

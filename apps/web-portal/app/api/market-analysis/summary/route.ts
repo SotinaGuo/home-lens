@@ -1,4 +1,4 @@
-import { proxyMarketBackendRequest } from "@/lib/market-analysis/server-api";
+import { proxyMarketBackendRequest } from "@/features/market-analysis/server-api";
 
 export const dynamic = "force-dynamic";
 

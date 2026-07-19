@@ -1,4 +1,4 @@
-import type { MarketHealthResponse } from "@/lib/market-analysis/types";
+import type { MarketHealthResponse } from "@/features/market-analysis/types";
 
 type MarketHealthCardProps = {
   health: MarketHealthResponse | null;

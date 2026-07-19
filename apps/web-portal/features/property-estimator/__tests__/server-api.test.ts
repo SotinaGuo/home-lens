@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { proxyBackendRequest } from "./server-api";
+import { proxyBackendRequest } from "../server-api";
 import { GET as getEstimatesRoute } from "@/app/api/property-estimator/estimates/route";
 
 describe("proxyBackendRequest", () => {
@@ -115,7 +115,7 @@ describe("GET /api/property-estimator/estimates", () => {
 
   it("forwards supported query parameters to the backend estimates endpoint", async () => {
     const proxyBackendRequestSpy = vi
-      .spyOn(await import("./server-api"), "proxyBackendRequest")
+      .spyOn(await import("../server-api"), "proxyBackendRequest")
       .mockResolvedValue(Response.json({ results: [] }));
 
     await getEstimatesRoute(

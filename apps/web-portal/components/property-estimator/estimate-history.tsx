@@ -1,5 +1,5 @@
-import { formatCurrency, formatDateTime, formatNumber } from "@/lib/property-estimator/formatting";
-import type { EstimateRecord } from "@/lib/property-estimator/types";
+import { formatCurrency, formatDateTime, formatNumber } from "@/features/property-estimator/formatting";
+import type { EstimateRecord } from "@/features/property-estimator/types";
 
 type EstimateHistoryProps = {
   estimates: EstimateRecord[];

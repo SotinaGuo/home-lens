@@ -13,11 +13,11 @@ import {
   featureLabels,
   formatCurrency,
   formatNumber
-} from "@/lib/property-estimator/formatting";
+} from "@/features/property-estimator/formatting";
 import type {
   ComparisonResponse,
   EstimateRecord
-} from "@/lib/property-estimator/types";
+} from "@/features/property-estimator/types";
 
 type EstimateComparisonProps = {
   comparison: ComparisonResponse | null;

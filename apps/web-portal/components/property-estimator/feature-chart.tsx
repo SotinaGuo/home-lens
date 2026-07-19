@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import type { PropertyFeatures } from "@/lib/property-estimator/types";
+import type { PropertyFeatures } from "@/features/property-estimator/types";
 
 type FeatureChartProps = {
   features: PropertyFeatures;

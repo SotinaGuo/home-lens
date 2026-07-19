@@ -1,5 +1,5 @@
-import { formatCurrency, formatNumber } from "@/lib/market-analysis/formatting";
-import type { MarketSegmentResponse } from "@/lib/market-analysis/types";
+import { formatCurrency, formatNumber } from "@/features/market-analysis/formatting";
+import type { MarketSegmentResponse } from "@/features/market-analysis/types";
 import { PropertyRecordTable } from "./property-record-table";
 
 type SegmentResultsProps = {

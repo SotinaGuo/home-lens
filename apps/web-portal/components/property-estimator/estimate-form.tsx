@@ -7,7 +7,7 @@ import {
   defaultPropertyValues,
   propertyFeatureSchema,
   type PropertyFeatureFormValues
-} from "@/lib/property-estimator/schemas";
+} from "@/features/property-estimator/schemas";
 
 type EstimateFormProps = {
   isSubmitting: boolean;
