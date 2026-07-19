@@ -1,2 +1,33 @@
 .worktrees/
 .superpowers/
+
+# macOS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+coverage/
+.turbo/
+
+# Java / Maven
+target/
+
+# Logs and local env
+*.log
+.env
+.env.*
+!.env.example
