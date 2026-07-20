@@ -28,6 +28,7 @@ target/
 
 # Logs and local env
 *.log
+.local/
 .env
 .env.*
 !.env.example

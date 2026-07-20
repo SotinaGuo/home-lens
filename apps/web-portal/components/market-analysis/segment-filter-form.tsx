@@ -88,7 +88,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <span className="flex min-h-10 items-end text-sm font-medium leading-5 text-slate-700">
+        {label}
+      </span>
       <div className="mt-1">{children}</div>
       {error ? <span className="mt-1 block text-xs font-medium text-red-600">{error}</span> : null}
     </label>
